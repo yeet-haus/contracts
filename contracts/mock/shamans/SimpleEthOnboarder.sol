@@ -23,14 +23,19 @@ contract SimpleEthOnboarderShaman is ReentrancyGuard, Initializable {
 
     constructor() initializer {}
 
-    function init(
+    function setup(
         address _moloch, // DAO address
         address _vault, // recipient vault
-        uint256 _expiry, // expiery date
-        uint256 _multiply, // multiply eth by this
-        uint256 _minTribute, // min eth to send
-        bool _isShares // mint shares or loot
+        bytes memory _initParams
     ) external initializer {
+        // uint256 _expiry, // expiery date
+        // uint256 _multiply, // multiply eth by this
+        // uint256 _minTribute, // min eth to send
+        // bool _isShares // mint shares or loot
+        (uint256 _expiry, uint256 _multiply, uint256 _minTribute, bool _isShares) = abi.decode(
+            _initParams,
+            (uint256, uint256, uint256, bool)
+        );
         baal = IBaal(_moloch);
         vault = _vault;
         expiry = _expiry;
