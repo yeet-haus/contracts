@@ -10,12 +10,14 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
 import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
-
+// TODO: use on upcoming release
+// import "@daohaus/baal-contracts/contracts/interfaces/IBaalAndVaultSummoner.sol";
 
 import "../interfaces/IShaman.sol";
-import "../interfaces/IBaalAndVaultSummoner.sol";
 import "../interfaces/IBaalFixedToken.sol";
+import "../interfaces/IBaalAndVaultSummoner.sol";
 
+// import "hardhat/console.sol";
 
 contract SuperSummoner is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     IBaalAndVaultSummoner public _baalSummoner;
@@ -51,7 +53,7 @@ contract SuperSummoner is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         bytes calldata initializationShareTokenParams,
         bytes calldata initializationShamanParams,
         bytes[] memory postInitializationActions,
-        uint256 saltNounce,
+        uint256 saltNonce,
         address safeAddr,
         address forwarder
     ) external {
@@ -76,7 +78,7 @@ contract SuperSummoner is Initializable, OwnableUpgradeable, UUPSUpgradeable {
                 sharesToken
             ),
             amendedPostInitActions,
-            saltNounce, // nonce
+            saltNonce, // nonce
             bytes32(bytes("DHSuperSummoner")), // referrer
             "sidecar"
         );
@@ -89,7 +91,7 @@ contract SuperSummoner is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         IBaalFixedToken(lootToken).initialMint(vault);
 
         // change token ownership to baal
-        // TODO in some cases transfer ownership will not work
+        // TODO: in some cases transfer ownership will not work
         IBaalFixedToken(lootToken).transferOwnership(address(baal));
         IBaalFixedToken(sharesToken).transferOwnership(address(baal));
 
@@ -110,13 +112,20 @@ contract SuperSummoner is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             (address, bytes)
         );
 
+        (string memory name, string memory symbol, uint256 initialSupply) = abi.decode(
+            initParams,
+            (string, string, uint256)
+        );
+
         // ERC1967 could be upgradable
         token = address(
             new ERC1967Proxy(
                 template,
                 abi.encodeWithSelector(
                     IBaalFixedToken(template).setUp.selector,
-                    initParams
+                    name,
+                    symbol,
+                    initialSupply
                 )
             )
         );
@@ -137,25 +146,24 @@ contract SuperSummoner is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         // Clones because it should not need to be upgradable
         shaman = IShaman(payable(Clones.clone(shamanTemplate)));
 
+        uint256 actionsLength = postInitializationActions.length;
         // amend postInitializationActions to include shaman setup
-        amendedPostInitActions = new bytes[](
-            postInitializationActions.length + 1
-        );
+        amendedPostInitActions = new bytes[](actionsLength + 1);
         address[] memory shamans = new address[](1);
         uint256[] memory permissions = new uint256[](1);
         // Clones because it should not need to be upgradable
         shamans[0] = address(shaman);
         permissions[0] = perm;
 
-        amendedPostInitActions[0] = abi.encodeWithSignature(
-            "setShaman(address[],uint256[])",
+        // copy over the rest of the actions
+        for (uint256 i = 0; i < actionsLength; i++) {
+            amendedPostInitActions[i] = postInitializationActions[i];
+        }
+        amendedPostInitActions[actionsLength] = abi.encodeWithSignature(
+            "setShamans(address[],uint256[])",
             shamans,
             permissions
         );
-        // copy over the rest of the actions
-        for (uint256 i = 1; i < postInitializationActions.length; i++) {
-            amendedPostInitActions[i] = postInitializationActions[i];
-        }
     }
 
     function setUpShaman(
