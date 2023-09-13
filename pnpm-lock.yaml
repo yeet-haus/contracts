@@ -10,9 +10,6 @@ dependencies:
   '@gnosis.pm/zodiac':
     specifier: ^3.3.7
     version: 3.3.7
-  '@opengsn/contracts':
-    specifier: 2.2.5
-    version: 2.2.5
   '@openzeppelin/contracts':
     specifier: ^4.9.3
     version: 4.9.3
