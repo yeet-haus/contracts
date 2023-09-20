@@ -7,47 +7,47 @@ const deployFn: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { getChainId, deployments, network } = hre;
   const { deployer } = await hre.getNamedAccounts();
 
-  console.log("\nDeploying FixedLootShamanSummoner factory on network:", network.name);
+  console.log("\nDeploying OnboarderShamanSummoner factory on network:", network.name);
 
   const chainId = await getChainId();
   // const _addresses = await getSetupAddresses(chainId, network, deployments);
   const addresses = deploymentConfig[chainId];
 
   if (network.name !== "hardhat") {
-    if (!addresses?.bvSummoner) throw Error("No address found for BaalAndVaultSummoner");
+    if (!addresses?.baalSummoner) throw Error("No address found for BaalSummoner");
     console.log(`Re-using contracts on ${network.name}:`);
-    console.log("BaalAndVaultSummoner", addresses.bvSummoner);
+    console.log("BaalSummoner", addresses.baalSummoner);
   }
 
-  const bvSummonerAddress =
-    network.name === "hardhat" ? (await deployments.get("BaalAndVaultSummoner")).address : addresses.bvSummoner;
+  const summonerAddress =
+    network.name === "hardhat" ? (await deployments.get("BaalSummoner")).address : addresses.baalSummoner;
 
-  const hosSummonerDeployed = await deployments.deploy("FixedLootShamanSummoner", {
-    contract: "FixedLootShamanSummoner",
+  const hosSummonerDeployed = await deployments.deploy("OnboarderShamanSummoner", {
+    contract: "OnboarderShamanSummoner",
     from: deployer,
     args: [],
     proxy: {
       proxyContract: "UUPS",
       execute: {
         methodName: "initialize",
-        args: [bvSummonerAddress],
+        args: [summonerAddress],
       },
     },
     log: true,
   });
-  console.log("FixedLootShamanSummoner deployment Tx ->", hosSummonerDeployed.transactionHash);
+  console.log("OnboarderShamanSummoner deployment Tx ->", hosSummonerDeployed.transactionHash);
 
   const owner = addresses?.owner || deployer;
-  console.log("FixedLootShamanSummoner transferOwnership to", owner);
+  console.log("OnboarderShamanSummoner transferOwnership to", owner);
   const txOwnership = await hre.deployments.execute(
-    "FixedLootShamanSummoner",
+    "OnboarderShamanSummoner",
     {
       from: deployer,
     },
     "transferOwnership",
     owner,
   );
-  console.log("FixedLootShamanSummoner transferOwnership Tx ->", txOwnership.transactionHash);
+  console.log("OnboarderShamanSummoner transferOwnership Tx ->", txOwnership.transactionHash);
 
   if (network.name !== "hardhat" && owner !== deployer && !addresses?.bvSummoner) {
     console.log("BaalAndVaultSummoner transferOwnership to", owner);
@@ -59,10 +59,10 @@ const deployFn: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       "transferOwnership",
       owner,
     );
-    console.log("BaalAndVaultSummoner transferOwnership Tx ->", tx.transactionHash);
+    console.log("BaalSummoner transferOwnership Tx ->", tx.transactionHash);
   }
 };
 
 export default deployFn;
 deployFn.id = "001_deploy_Summoner"; // id required to prevent reexecution
-deployFn.tags = ["Factories", "FixedLootShamanSummoner"];
+deployFn.tags = ["Factories", "OnboarderShamanSummoner"];
