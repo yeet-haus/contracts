@@ -38,7 +38,7 @@ export function shouldSummonASuperBaal(): void {
   });
 
   it("should be initialized", async function () {
-    const init = this.summoner?.initialize(ethers.constants.AddressZero);
+    const init = this.summoner?.initialize(ethers.constants.AddressZero, ethers.constants.AddressZero);
     await expect(init).to.be.revertedWith("Initializable: contract is already initialized");
   });
 }

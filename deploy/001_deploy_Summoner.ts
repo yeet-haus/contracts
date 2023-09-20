@@ -21,6 +21,11 @@ const deployFn: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const bvSummonerAddress =
     network.name === "hardhat" ? (await deployments.get("BaalAndVaultSummoner")).address : addresses.bvSummoner;
+  // TODO: this should be retrieved from getSetupAddresses
+  const moduleProxyFactoryAddress = 
+    network.name === "hardhat"
+      ? (await deployments.get("ModuleProxyFactory")).address
+      : "0x00000000000DC7F163742Eb4aBEf650037b1f588";
 
   const hosSummonerDeployed = await deployments.deploy("FixedLootShamanSummoner", {
     contract: "FixedLootShamanSummoner",
@@ -30,7 +35,7 @@ const deployFn: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       proxyContract: "UUPS",
       execute: {
         methodName: "initialize",
-        args: [bvSummonerAddress],
+        args: [bvSummonerAddress, moduleProxyFactoryAddress],
       },
     },
     log: true,

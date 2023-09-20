@@ -10,7 +10,7 @@ import { BigNumberish, ContractTransaction } from "ethers";
 import { ethers } from "hardhat";
 import { Log } from "hardhat-deploy/types";
 
-import { FixedLootShamanSummoner } from "../../types";
+import { HOSBase } from "../../types";
 
 export const abiCoder = ethers.utils.defaultAbiCoder;
 
@@ -116,7 +116,7 @@ export const getNewBaalAddresses = async (
 };
 
 type NewBaalConfig = {
-  summoner: FixedLootShamanSummoner;
+  summoner: HOSBase;
   baalSingleton: Baal;
   poster: Poster;
   config: DAOSettings;
