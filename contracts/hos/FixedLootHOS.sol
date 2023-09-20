@@ -23,8 +23,8 @@ contract FixedLootShamanSummoner is HOSBase {
 
     function initialize(address _baalVaultSummoner, address _moduleProxyFactory) public override {
         // baalAndVaultSummoner
-        baalVaultSummoner = IBaalAndVaultSummoner(_baalVaultSummoner); //vault summoner
         require(_baalVaultSummoner != address(0), "zero address");
+        baalVaultSummoner = IBaalAndVaultSummoner(_baalVaultSummoner); //vault summoner
         // standard baalSummoner
         address baalSummoner = baalVaultSummoner._baalSummoner();
         super.initialize(baalSummoner, _moduleProxyFactory);

@@ -1,4 +1,5 @@
 import {
+  BaalAndVaultSummoner,
   NewBaalParams,
   SHAMAN_PERMISSIONS,
   SetupUsersParams,
@@ -13,6 +14,7 @@ import { encodeMockClaimShamanParams, setUpNftand6551, summonBaal } from "./Clai
 
 describe("ClaimSummoner", function () {
   describe("Summoner", function () {
+    let baalVaultSummoner: BaalAndVaultSummoner;
     let shamanAddress = "";
     let sidecarVault = "";
     let nftAddress = "";
@@ -34,6 +36,7 @@ describe("ClaimSummoner", function () {
 
         setupBaalOverride: async (params: NewBaalParams) => {
           console.log("OVERRIDE baal setup ******");
+          baalVaultSummoner = (await ethers.getContract("BaalAndVaultSummoner") as BaalAndVaultSummoner);
           const fixedLootShamanSummoner = (await ethers.getContract(
             "FixedLootShamanSummoner",
           )) as FixedLootShamanSummoner;
@@ -96,6 +99,7 @@ describe("ClaimSummoner", function () {
         },
       });
 
+      this.baalVaultSummoner = baalVaultSummoner;
       this.summoner = summoner;
       this.deployer = deployer;
       this.baal = Baal;
