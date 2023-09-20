@@ -20,15 +20,12 @@ import "../interfaces/IBaalFixedToken.sol";
 // import "hardhat/console.sol";
 
 contract OnboarderShamanSummoner is HOSBase {
-    IBaalSummoner public _baalSummoner;
 
-    function initialize(address baalSummoner) public override {
-        super.initialize(baalSummoner);
+    function initialize(address _baalSummoner, address _moduleProxyFactory) public override {
         // standard baalSummoner
-        require(baalSummoner != address(0), "zero address");
-        _baalSummonerAddress = baalSummoner;
-        _baalSummoner = IBaalSummoner(baalSummoner); //vault summoner
-        emit SetSummoner(baalSummoner);
+        super.initialize(_baalSummoner, _moduleProxyFactory);
+        require(_baalSummoner != address(0), "zero address");
+        emit SetSummoner(_baalSummoner);
     }
 
     /**
@@ -48,7 +45,7 @@ contract OnboarderShamanSummoner is HOSBase {
         uint256 saltNonce
     ) internal override returns (address baal, address vault) {
         vault = address(0);
-        baal = _baalSummoner.summonBaalFromReferrer(
+        baal = baalSummoner.summonBaalFromReferrer(
             abi.encode(
                 IBaalFixedToken(sharesToken).name(),
                 IBaalFixedToken(sharesToken).symbol(),

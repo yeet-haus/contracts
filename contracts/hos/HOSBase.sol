@@ -10,6 +10,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
 import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
+import "@daohaus/baal-contracts/contracts/interfaces/IBaalSummoner.sol";
 import "@daohaus/baal-contracts/contracts/interfaces/IBaalToken.sol";
 
 // TODO: use on upcoming release
@@ -22,7 +23,8 @@ import "../interfaces/IBaalAndVaultSummoner.sol";
 // import "hardhat/console.sol";
 
 contract HOSBase is Initializable, OwnableUpgradeable, UUPSUpgradeable {
-    address public _baalSummonerAddress;
+    IBaalSummoner public baalSummoner;
+    address public moduleProxyFactory;
 
     event SetSummoner(address summoner);
 
@@ -32,9 +34,26 @@ contract HOSBase is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         _disableInitializers();
     }
 
-    function initialize(address baalSummoner) public virtual initializer {
+    function initialize(address _baalSummoner, address _moduleProxyFactory) public virtual initializer {
         __Ownable_init();
         __UUPSUpgradeable_init();
+        baalSummoner = IBaalSummoner(_baalSummoner);
+        moduleProxyFactory = _moduleProxyFactory;
+    }
+
+    function calculateBaalAddress(uint256 _saltNonce) public view returns (address) {
+        bytes memory _initializer = abi.encodeWithSignature("avatar()");
+        bytes32 _salt = keccak256(abi.encodePacked(keccak256(_initializer), _saltNonce));
+        bytes memory bytecode = abi.encodePacked(
+            hex"602d8060093d393df3363d3d373d3d3d363d73",
+            baalSummoner.template(),
+            hex"5af43d82803e903d91602b57fd5bf3"
+        );
+        bytes32 predictedHash = keccak256(
+            abi.encodePacked(bytes1(0xff), moduleProxyFactory, _salt, keccak256(bytecode))
+        );
+
+        return address(uint160(uint(predictedHash)));
     }
 
     /**
@@ -61,8 +80,12 @@ contract HOSBase is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             initializationShamanParams
         );
 
+        // address predictedBaalAddress = calculateBaalAddress(saltNonce);
+
         // summon baal with new tokens
         (address baal, address vault) = summon(amendedPostInitActions, lootToken, sharesToken, saltNonce);
+
+        // console.log("baal >>", baal, predictedBaalAddress);
 
         postDeployActions(initializationShamanParams, lootToken, sharesToken, address(shaman), baal, vault);
         return baal;
