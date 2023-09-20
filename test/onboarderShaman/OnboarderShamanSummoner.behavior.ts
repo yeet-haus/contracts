@@ -24,7 +24,8 @@ export function shouldSummonASuperBaal(): void {
   it("Should have loot,shares ownership with baal", async function () {
     const sharesOwner = await (this.shares as IBaalToken).owner();
     const lootOwner = await (this.loot as IBaalToken).owner();
-    console.log("T owners", sharesOwner, lootOwner);
+    expect(sharesOwner).to.equal(this.baal.address);
+    expect(lootOwner).to.equal(this.baal.address);
   });
 
   it("Should mint shares", async function () {
