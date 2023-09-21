@@ -17,6 +17,8 @@ error Paused();
 error NotPaused();
 
 contract NFT6551ClaimerShaman is Initializable {
+    string public constant name = "NFT6551ClaimerShaman";
+
     IBaal public baal;
     address public vault;
 
@@ -40,14 +42,12 @@ contract NFT6551ClaimerShaman is Initializable {
     ) external initializer {
         baal = IBaal(_moloch);
         vault = _vault;
-        (address _nftAddress, address _registry, address _tbaImp, uint256 _perNft, uint256 _sharesPerNft) = abi.decode(
-            _initParams,
-            (address, address, address, uint256, uint256)
-        );
+        (address _nftAddress, address _registry, address _tbaImp, uint256 _lootPerNft, uint256 _sharesPerNft) = abi
+            .decode(_initParams, (address, address, address, uint256, uint256));
         nft = IERC721(_nftAddress);
         registry = IERC6551Registry(_registry);
         tbaImp = IERC6551Account(payable(_tbaImp));
-        lootPerNft = _perNft;
+        lootPerNft = _lootPerNft;
         sharesPerNft = _sharesPerNft;
     }
 

@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 // tribute eth for loot or shares
 contract SimpleEthOnboarderShaman is ReentrancyGuard, Initializable {
-    event ObReceived(address indexed contributorAddress, uint256 amount, uint256 isShares, address baal, address vault);
+    string public constant name = "SimpleEthOnboarderShaman";
 
     uint256 public expiry;
     uint256 public multiply;
@@ -20,6 +20,8 @@ contract SimpleEthOnboarderShaman is ReentrancyGuard, Initializable {
 
     IBaal public baal;
     address vault;
+
+    event ObReceived(address indexed contributorAddress, uint256 amount, uint256 isShares, address baal, address vault);
 
     constructor() initializer {}
 
