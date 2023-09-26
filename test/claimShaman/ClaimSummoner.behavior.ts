@@ -1,15 +1,14 @@
-import { IBaal, IBaalToken, SHAMAN_PERMISSIONS, encodeMultiAction } from "@daohaus/baal-contracts";
+import { Baal, IBaalToken, SHAMAN_PERMISSIONS, encodeMultiAction } from "@daohaus/baal-contracts";
 import { expect } from "chai";
 import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
 
 import { FixedLoot, IERC20 } from "../../types";
-import { submitAndProcessProposal } from "../utils/baal";
 
 export function shouldSummonASuperBaal(): void {
   it("Should have a manager shaman", async function () {
     expect(this.shaman?.address.length).greaterThan(0);
-    expect(await (this.baal as IBaal).shamans(this.shaman.address)).to.equal(SHAMAN_PERMISSIONS.MANAGER);
+    expect(await (this.baal as Baal).shamans(this.shaman.address)).to.equal(SHAMAN_PERMISSIONS.MANAGER);
   });
 
   it("Should have a sidecar vault", async function () {
@@ -67,10 +66,10 @@ export function shouldSummonASuperBaal(): void {
     const totalShares = await (this.shares as IERC20).totalSupply();
 
     // delegate to default user
-    await (this.shares as IBaalToken).delegate(this.users.summoner.address);
+    // await (this.shares as IBaalToken).delegate(this.users.summoner.address);
     // console.log("this.users", this.users.summoner.address, this.users.applicant.address, this.users.shaman.address);
 
-    const votingPeriodSeconds = await this.baal.votingPeriod();
+    // const votingPeriodSeconds = await this.baal.votingPeriod();
 
     const mintShares = await this.baal.interface.encodeFunctionData("mintShares", [
       [this.users.summoner.address],
@@ -84,8 +83,8 @@ export function shouldSummonASuperBaal(): void {
       [0],
     );
 
-    const sp = submitAndProcessProposal({
-      baal: this.baal,
+    const sp = this.helpers.submitAndProcessProposal({
+      baal: (await ethers.getContractAt('Baal', this.baal.address, this.deployer) as Baal), // deployer is the only account with shares
       encodedAction: encodedAction,
       proposal: {
         flag: 1,
@@ -95,7 +94,7 @@ export function shouldSummonASuperBaal(): void {
         expiration: 0,
         baalGas: 0,
       },
-      votingPeriodSeconds,
+      extraSeconds: 3, // # extra blocks to wait before processing the proposal
     });
 
     await expect(sp).to.emit(this.baal, "ProcessProposal").withArgs(1, true, false);
@@ -110,15 +109,13 @@ export function shouldSummonASuperBaal(): void {
     await (this.shares as IBaalToken).delegate(this.users.summoner.address);
     // console.log("this.users", this.users.summoner.address, this.users.applicant.address, this.users.shaman.address);
 
-    const votingPeriodSeconds = await this.baal.votingPeriod();
-
     const mintLoot = await this.baal.interface.encodeFunctionData("mintLoot", [
       [this.users.summoner.address],
       [ethers.utils.parseEther("69")],
     ]);
     const encodedAction = encodeMultiAction(this.multisend, [mintLoot], [this.baal.address], [BigNumber.from(0)], [0]);
 
-    const sp = submitAndProcessProposal({
+    const sp = this.helpers.submitAndProcessProposal({
       baal: this.baal,
       encodedAction: encodedAction,
       proposal: {
@@ -129,7 +126,7 @@ export function shouldSummonASuperBaal(): void {
         expiration: 0,
         baalGas: 0,
       },
-      votingPeriodSeconds,
+      extraSeconds: 3, // # extra blocks to wait before processing the proposal
     });
 
     await expect(sp).to.emit(this.baal, "ProcessProposal").withArgs(1, true, true); // third true is failed
@@ -142,12 +139,10 @@ export function shouldSummonASuperBaal(): void {
     await (this.shares as IBaalToken).delegate(this.users.summoner.address);
     // console.log("this.users", this.users.summoner.address, this.users.applicant.address, this.users.shaman.address);
 
-    const votingPeriodSeconds = await this.baal.votingPeriod();
-
     const mintLoot = await this.baal.interface.encodeFunctionData("setAdminConfig", [true, true]);
     const encodedAction = encodeMultiAction(this.multisend, [mintLoot], [this.baal.address], [BigNumber.from(0)], [0]);
 
-    const sp = submitAndProcessProposal({
+    const sp = this.helpers.submitAndProcessProposal({
       baal: this.baal,
       encodedAction: encodedAction,
       proposal: {
@@ -158,7 +153,7 @@ export function shouldSummonASuperBaal(): void {
         expiration: 0,
         baalGas: 0,
       },
-      votingPeriodSeconds,
+      extraSeconds: 3, // # extra blocks to wait before processing the proposal
     });
 
     await expect(sp).to.emit(this.baal, "ProcessProposal").withArgs(1, true, false);
