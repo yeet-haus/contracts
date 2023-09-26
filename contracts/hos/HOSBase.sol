@@ -66,7 +66,7 @@ contract HOSBase is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     function summonBaalFromReferrer(
         bytes calldata initializationLootTokenParams,
         bytes calldata initializationShareTokenParams,
-        bytes calldata initializationShamanParams,
+        bytes calldata initializationShamanParams, // maybe break out baal init params and shaman init params
         bytes[] memory postInitializationActions,
         uint256 saltNonce
     ) external virtual returns (address) {
@@ -188,7 +188,7 @@ contract HOSBase is Initializable, OwnableUpgradeable, UUPSUpgradeable {
      * the setShaman action is added to the postInitializationActions
      * shaman is not fully setup here, only the address is set
      * @param postInitializationActions The actions to be performed after the initialization
-     * @param initializationShamanParams The parameters for deploying the shaman (address template, uint256 permissions, )
+     * @param initializationShamanParams The parameters for deploying the shaman (address template, uint256 permissions, ) third peram is for poste deploy init
      *
      */
     function deployShamans(
