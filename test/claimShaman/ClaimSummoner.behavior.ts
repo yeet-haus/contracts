@@ -1,4 +1,5 @@
 import { IBaal, IBaalToken, SHAMAN_PERMISSIONS, encodeMultiAction } from "@daohaus/baal-contracts";
+import { impersonateAccount } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
@@ -66,8 +67,19 @@ export function shouldSummonASuperBaal(): void {
   it("Should be able to mint shares through proposal", async function () {
     const totalShares = await (this.shares as IERC20).totalSupply();
 
+    await this.shaman?.claim(1);
     // delegate to default user
-    await (this.shares as IBaalToken).delegate(this.users.summoner.address);
+    const imp = await this.shaman?.tbaImp();
+    const tba = await this.registry.account(imp, this.chainId, this.nft.address, 1, 0);
+    await impersonateAccount(tba);
+    const impersonatedTba = await ethers.getSigner(tba);
+    const [s1] = await ethers.getSigners();
+
+    await s1.sendTransaction({
+      to: tba,
+      value: ethers.utils.parseEther("1.0"), // Sends exactly 1.0 ether
+    });
+    await (this.shares as IBaalToken).connect(impersonatedTba).delegate(this.users.summoner.address);
     // console.log("this.users", this.users.summoner.address, this.users.applicant.address, this.users.shaman.address);
 
     const votingPeriodSeconds = await this.baal.votingPeriod();
@@ -100,14 +112,28 @@ export function shouldSummonASuperBaal(): void {
 
     await expect(sp).to.emit(this.baal, "ProcessProposal").withArgs(1, true, false);
     const totalSharesAfter = await (this.shares as IERC20).totalSupply();
-    await expect(totalSharesAfter).to.equal(totalShares.add(ethers.utils.parseEther("69")));
+    // 70 because one is minted in claim
+    await expect(totalSharesAfter).to.equal(totalShares.add(ethers.utils.parseEther("70")));
   });
 
   it("Should not be able to mint loot through proposal", async function () {
     const totalLoot = await (this.loot as IERC20).totalSupply();
 
+    await this.shaman?.claim(1);
+
     // delegate to default user
-    await (this.shares as IBaalToken).delegate(this.users.summoner.address);
+    const imp = await this.shaman?.tbaImp();
+    const tba = await this.registry.account(imp, this.chainId, this.nft.address, 1, 0);
+    await impersonateAccount(tba);
+    const impersonatedTba = await ethers.getSigner(tba);
+    const [s1] = await ethers.getSigners();
+
+    await s1.sendTransaction({
+      to: tba,
+      value: ethers.utils.parseEther("1.0"), // Sends exactly 1.0 ether
+    });
+    await (this.shares as IBaalToken).connect(impersonatedTba).delegate(this.users.summoner.address);
+
     // console.log("this.users", this.users.summoner.address, this.users.applicant.address, this.users.shaman.address);
 
     const votingPeriodSeconds = await this.baal.votingPeriod();
@@ -139,7 +165,20 @@ export function shouldSummonASuperBaal(): void {
 
   it("Should not be able to pause loot through proposal", async function () {
     // delegate to default user
-    await (this.shares as IBaalToken).delegate(this.users.summoner.address);
+    await this.shaman?.claim(1);
+    const imp = await this.shaman?.tbaImp();
+
+    const tba = await this.registry.account(imp, this.chainId, this.nft.address, 1, 0);
+    await impersonateAccount(tba);
+    const impersonatedTba = await ethers.getSigner(tba);
+    const [s1] = await ethers.getSigners();
+
+    await s1.sendTransaction({
+      to: tba,
+      value: ethers.utils.parseEther("1.0"), // Sends exactly 1.0 ether
+    });
+    await (this.shares as IBaalToken).connect(impersonatedTba).delegate(this.users.summoner.address);
+
     // console.log("this.users", this.users.summoner.address, this.users.applicant.address, this.users.shaman.address);
 
     const votingPeriodSeconds = await this.baal.votingPeriod();

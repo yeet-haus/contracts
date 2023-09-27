@@ -59,7 +59,7 @@ contract FixedLootShamanSummoner is HOSBase {
             postInitActions,
             saltNonce, // salt nonce
             bytes32(bytes("DHFixedLootShamanSummoner")), // referrer
-            string.concat(IBaalFixedToken(sharesToken).symbol(), " ", "Vault") // name
+            string.concat(IBaalFixedToken(lootToken).symbol(), " ", "Vault") // name
         );
     }
 
@@ -128,8 +128,6 @@ contract FixedLootShamanSummoner is HOSBase {
         for (uint256 i = 0; i < shamans.length; i++) {
             setUpShaman(shamans[i], baal, vault, initializationShamanParams, i);
         }
-
-        super.postDeployShamanActions(initializationShamanParams, lootToken, sharesToken, shamans, baal, vault);
     }
 
     /**
@@ -177,8 +175,6 @@ contract FixedLootShamanSummoner is HOSBase {
         address baal,
         address vault
     ) internal override {
-        // todo: remove, mint initial share to summoner for testing
-        IBaalToken(sharesToken).mint(msg.sender, 3 ether);
         IBaalToken(sharesToken).pause();
 
         super.postDeploySharesActions(initializationShareParams, lootToken, sharesToken, shamans, baal, vault);
