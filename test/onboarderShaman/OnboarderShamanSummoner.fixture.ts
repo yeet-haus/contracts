@@ -82,7 +82,7 @@ export const encodeBaalInitAction = async function (
 
 export const getNewBaalAddresses = async (
   tx: ContractTransaction,
-): Promise<NewBaalAddresses & { shaman: string; sidecarVault: string }> => {
+): Promise<NewBaalAddresses & { shamans: string[]; sidecarVault: string }> => {
   const receipt = await ethers.provider.getTransactionReceipt(tx.hash);
   const baalSummonAbi = [
     "event SummonBaal(address indexed baal, address indexed loot, address indexed shares, address safe, address forwarder, uint256 existingAddrs)",
@@ -99,10 +99,15 @@ export const getNewBaalAddresses = async (
     const { baal, loot, shares, safe } = log.args;
     // ShamanSet event
     const shamanEventTopic = iface.getEventTopic("ShamanSet(address,uint256)");
-    const shamanEventLog = receipt.logs.find((log: Log) => log.topics.includes(shamanEventTopic));
-    if (!shamanEventLog) throw Error("Shaman Event not found");
-    const shamanLog = iface.parseLog(shamanEventLog);
-    const { shaman } = shamanLog.args;
+
+    const shamanEventLog = receipt.logs.filter((log: Log) => log.topics.includes(shamanEventTopic));
+    if (!shamanEventLog.length) throw Error("Shaman Event not found");
+    const shamans = [];
+    for (const log of shamanEventLog) {
+      const shamanLog = iface.parseLog(log);
+      shamans.push(shamanLog.args.shaman);
+    }
+
     // SetVault event
     const vaultEventTopic = summonerIface.getEventTopic("DeployBaalSafe(address,address)");
     // NOTICE: reverse array order to get the latest event
@@ -110,7 +115,7 @@ export const getNewBaalAddresses = async (
     if (!vaultEventLog) throw Error("Vault Event not found");
     const vaultLog = summonerIface.parseLog(vaultEventLog);
     const { baalSafe } = vaultLog.args;
-    return { baal, loot, shares, safe, shaman, sidecarVault: baalSafe };
+    return { baal, loot, shares, safe, shamans, sidecarVault: baalSafe };
   }
   throw Error("Summon Event not found");
 };

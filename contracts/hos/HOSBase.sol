@@ -20,7 +20,7 @@ import "../interfaces/IShaman.sol";
 import "../interfaces/IBaalFixedToken.sol";
 import "../interfaces/IBaalAndVaultSummoner.sol";
 
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 contract HOSBase is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     IBaalSummoner public baalSummoner;

@@ -8,13 +8,18 @@ import {
 } from "@daohaus/baal-contracts";
 import { ethers, getNamedAccounts, getUnnamedAccounts } from "hardhat";
 
-import { OnboarderShamanSummoner, SimpleEthOnboarderShaman } from "../../types";
-import { shouldSummonASuperBaal } from "./OnboarderShamanSummoner.behavior";
-import { encodeMockOnboarderShamanParams, summonBaal } from "./OnboarderShamanSummoner.fixture";
+import { CommunityVetoShaman, OnboarderShamanSummoner, SimpleEthOnboarderShaman } from "../../types";
+import { encodeMockOnboarderShamanParams, summonBaal } from "../onboarderShaman/OnboarderShamanSummoner.fixture";
+import { shouldSummonASuperBaal } from "./MultiShamanSummoner.behavior";
+import { encodeMockVetoShamanParams } from "./MultiShamanSummoner.fixture";
 
-describe("OnboarderShamanSummoner", function () {
+// import { encodeMockOnboarderShamanParams, summonBaal } from "./OnboarderShamanSummoner.fixture";
+
+describe("MultiShamanSummoner", function () {
   describe("Summoner", function () {
     let shamanAddress = "";
+    let shamanAddress2 = "";
+
     let summoner: OnboarderShamanSummoner;
 
     beforeEach(async function () {
@@ -30,19 +35,23 @@ describe("OnboarderShamanSummoner", function () {
         daoSettings: {
           ...defaultDAOSettings, // You can override dao settings
         },
-        fixtureTags: ["OnboarderShamanSummoner", "MocksOnboarder"],
+        fixtureTags: ["OnboarderShamanSummoner", "MocksOnboarder", "MocksVeto", "GovernorLoot"],
         setupBaalOverride: async (params: NewBaalParams) => {
           console.log("OVERRIDE baal setup ******");
           const onboarderShamanSummoner = (await ethers.getContract(
             "OnboarderShamanSummoner",
           )) as OnboarderShamanSummoner;
-          const lootTokenSingletonAddress = (await ethers.getContract("Loot")).address;
+          const lootTokenSingletonAddress = (await ethers.getContract("GovernorLoot")).address;
           const sharesTokenSingletonAddress = (await ethers.getContract("Shares")).address;
 
           const mockShamanSingleton = (await ethers.getContract(
             "SimpleEthOnboarderShaman",
             deployer,
           )) as SimpleEthOnboarderShaman;
+          const mockVetoShamanSingleton = (await ethers.getContract(
+            "CommunityVetoShaman",
+            deployer,
+          )) as CommunityVetoShaman;
           const { baalSingleton, poster, config, adminConfig } = params;
           const newBaalAddresses = await summonBaal({
             summoner: onboarderShamanSummoner,
@@ -52,8 +61,8 @@ describe("OnboarderShamanSummoner", function () {
             adminConfig,
             shamans: undefined,
             lootConfig: {
-              name: "Standard Loot",
-              symbol: "LOOT",
+              name: "Governor Loot",
+              symbol: "GLOOT",
               singletonAddress: lootTokenSingletonAddress,
               tos: [s1, s2, s3],
               amounts,
@@ -66,12 +75,14 @@ describe("OnboarderShamanSummoner", function () {
               amounts,
             },
             shamanConfig: {
-              permissions: [SHAMAN_PERMISSIONS.MANAGER],
-              setupParams: [encodeMockOnboarderShamanParams()],
-              singletonAddress: [mockShamanSingleton.address],
+              permissions: [SHAMAN_PERMISSIONS.MANAGER, SHAMAN_PERMISSIONS.GOVERNANCE],
+              setupParams: [encodeMockOnboarderShamanParams(), encodeMockVetoShamanParams()],
+              singletonAddress: [mockShamanSingleton.address, mockVetoShamanSingleton.address],
             },
           });
           shamanAddress = newBaalAddresses.shamans[0];
+          shamanAddress2 = newBaalAddresses.shamans[1];
+
           summoner = onboarderShamanSummoner;
           return newBaalAddresses;
         },
@@ -97,6 +108,11 @@ describe("OnboarderShamanSummoner", function () {
         shamanAddress,
         deployer,
       )) as SimpleEthOnboarderShaman;
+      this.vetoShaman = (await ethers.getContractAt(
+        "CommunityVetoShaman",
+        shamanAddress2,
+        deployer,
+      )) as CommunityVetoShaman;
     });
 
     shouldSummonASuperBaal();
