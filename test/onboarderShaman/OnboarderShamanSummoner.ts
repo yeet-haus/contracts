@@ -1,10 +1,9 @@
 import {
-  BaalSummoner,
-  defaultDAOSettings,
   NewBaalParams,
   SHAMAN_PERMISSIONS,
   SetupUsersParams,
   baalSetup,
+  defaultDAOSettings,
   setupUsersDefault,
 } from "@daohaus/baal-contracts";
 import { ethers, getNamedAccounts, getUnnamedAccounts } from "hardhat";
