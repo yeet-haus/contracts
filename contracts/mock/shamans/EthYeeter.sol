@@ -46,6 +46,10 @@ contract EthYeeter is ReentrancyGuard, Initializable {
      *  uint256 multiplier: how much to multiply the eth amount by for share/loot return
      *  address[] feeRecipients: array of addresses to send fee cut to on contributions
      *  uint256[] feeAmounts: array of percentages for fee cuts to each recipient
+     *
+     *  Requirements:
+     *
+     * number of feeRecipients matches feeAmounts
      */
     function setup(address _moloch, address _vault, bytes memory _initParams) external initializer {
         (
