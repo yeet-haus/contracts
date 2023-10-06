@@ -11,6 +11,7 @@ import "hardhat/console.sol";
 
 // yeet eth for loot or shares
 contract EthYeeter is ReentrancyGuard, Initializable {
+    uint256 public immutable PERC_POINTS = 1e6;
     string public constant name = "EthYeeter";
 
     uint256 public startTime;
@@ -56,6 +57,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
             address[] _feeRecipients,
             uint256 _feeAmounts
         ) = abi.decode(_initParams, (uint256, uint256, bool, uint256, uint256, address[], uint256[]));
+        require(_feeAmounts.length == _feeRecipients.length, "fee amounts does not equal fee recipients");
         baal = IBaal(_moloch);
         vault = _vault;
         startTime = _startTime;
@@ -87,12 +89,6 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         }
     }
 
-    // tribute eth for loot or shares
-    // must meet minimum tribute
-    // fees are sent to the cuts addresses
-    // eth is sent to the DAO
-    // loot or shares are minted to the sender
-
     /**
      * @dev public function to make contributions
      * Takes eth as the value on the tx and mints the tokens to the sender
@@ -114,12 +110,18 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         require(baal.isManager(address(this)), "Shaman not manager");
         require(msg.value >= minTribute, "!minTribute");
 
-        // mint loot or shares minus any fees
-        // WEDNESDAY: HERE
+        uint256 totalFee = 0;
+        for (uint256 i = 0; i < feeAmounts.length; i++) {
+            uint256 _cut = (msg.value / PERC_POINTS) * feeAmounts[i];
+            (bool success, ) = feeRecipients[i].call{ value: _cut }("");
+            require(success, "Transfer to cut failed");
+            totalFee = totalFee + _cut;
+        }
+
         uint256 _shares = msg.value * multipler;
 
         // transfer funds to vault
-        (bool success, ) = vault.call{ value: msg.value }("");
+        (bool success, ) = vault.call{ value: msg.value - totalFee }("");
         require(success, "Transfer failed");
 
         _mintTokens(msg.sender, _shares);
