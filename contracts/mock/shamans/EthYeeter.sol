@@ -130,6 +130,6 @@ contract EthYeeter is ReentrancyGuard, Initializable {
     }
 
     receive() external payable {
-        onboarder();
+        contributeEth();
     }
 }
