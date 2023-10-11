@@ -35,7 +35,7 @@ export const ethYeeterConfig = async () => {
     startTime: (Date.parse("01 Jan 2000") / 1000).toFixed(0),
     endTime: (Date.parse("01 Jan 3000") / 1000).toFixed(0),
     isShares: true,
-    multiplier: ethers.utils.parseEther("100"),
+    multiplier: "100",
     minTribute: ethers.utils.parseEther("0.01"),
     feeRecipients: [s1, s2],
     feeAmounts: [250000, 100000],

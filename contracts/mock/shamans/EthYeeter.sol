@@ -23,7 +23,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
     uint256[] public feeAmounts;
 
     IBaal public baal;
-    address vault;
+    address public vault;
 
     event OnReceived(address indexed contributorAddress, uint256 amount, uint256 isShares, address baal, address vault);
 
@@ -56,7 +56,11 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         ) = abi.decode(_initParams, (uint256, uint256, bool, uint256, uint256, address[], uint256[]));
         require(_feeAmounts.length == _feeRecipients.length, "fee amounts does not equal fee recipients");
         baal = IBaal(_moloch);
-        vault = _vault;
+        if (_vault == address(0)) {
+            vault = baal.target();
+        } else {
+            vault = _vault;
+        }
         startTime = _startTime;
         endTime = _endTime;
         isShares = _isShares;
@@ -118,7 +122,9 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         uint256 _shares = msg.value * multiplier;
 
         // transfer funds to vault
-        (bool transferSuccess, ) = vault.call{ value: msg.value - totalFee }("");
+        // (bool transferSuccess, ) = vault.call{ value: msg.value - totalFee }("");
+        (bool transferSuccess, ) = baal.target().call{ value: msg.value - totalFee }("");
+
         require(transferSuccess, "Transfer failed");
 
         _mintTokens(msg.sender, _shares);
