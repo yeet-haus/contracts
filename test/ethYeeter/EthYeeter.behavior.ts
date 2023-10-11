@@ -71,7 +71,7 @@ export function shouldSummonASuperBaal(): void {
     const [s1] = await ethers.getSigners();
     const amount = ethers.utils.parseEther("0.001");
     const shamanAsS1 = (await ethers.getContractAt("EthYeeter", this.shaman.address, s1.address)) as EthYeeter;
-    const yeet = await shamanAsS1.contributeEth({ value: amount });
+    const yeet = shamanAsS1.contributeEth({ value: amount });
 
     await expect(yeet).to.be.revertedWith("!minTribute");
   });
