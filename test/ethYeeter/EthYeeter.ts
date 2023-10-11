@@ -8,11 +8,11 @@ import {
 } from "@daohaus/baal-contracts";
 import { ethers, getNamedAccounts, getUnnamedAccounts } from "hardhat";
 
-import { OnboarderShamanSummoner, SimpleEthOnboarderShaman } from "../../types";
-import { shouldSummonASuperBaal } from "./OnboarderShamanSummoner.behavior";
-import { encodeMockOnboarderShamanParams, summonBaal } from "./OnboarderShamanSummoner.fixture";
+import { EthYeeter, OnboarderShamanSummoner } from "../../types";
+import { shouldSummonASuperBaal } from "./EthYeeter.behavior";
+import { encodeMockEthYeeterParams, summonBaal } from "./EthYeeter.fixture";
 
-describe("OnboarderShamanSummoner", function () {
+describe("EthYeeterSummoner", function () {
   describe("Summoner", function () {
     let shamanAddress = "";
     let summoner: OnboarderShamanSummoner;
@@ -30,7 +30,7 @@ describe("OnboarderShamanSummoner", function () {
         daoSettings: {
           ...defaultDAOSettings, // You can override dao settings
         },
-        fixtureTags: ["OnboarderShamanSummoner", "MocksOnboarder"],
+        fixtureTags: ["OnboarderShamanSummoner", "MocksEthYeeter"],
         setupBaalOverride: async (params: NewBaalParams) => {
           console.log("OVERRIDE baal setup ******");
           const onboarderShamanSummoner = (await ethers.getContract(
@@ -39,10 +39,7 @@ describe("OnboarderShamanSummoner", function () {
           const lootTokenSingletonAddress = (await ethers.getContract("Loot")).address;
           const sharesTokenSingletonAddress = (await ethers.getContract("Shares")).address;
 
-          const mockShamanSingleton = (await ethers.getContract(
-            "SimpleEthOnboarderShaman",
-            deployer,
-          )) as SimpleEthOnboarderShaman;
+          const mockShamanSingleton = (await ethers.getContract("EthYeeter", deployer)) as EthYeeter;
           const { baalSingleton, poster, config, adminConfig } = params;
           const newBaalAddresses = await summonBaal({
             summoner: onboarderShamanSummoner,
@@ -67,7 +64,7 @@ describe("OnboarderShamanSummoner", function () {
             },
             shamanConfig: {
               permissions: [SHAMAN_PERMISSIONS.MANAGER],
-              setupParams: [encodeMockOnboarderShamanParams()],
+              setupParams: [await encodeMockEthYeeterParams()],
               singletonAddress: [mockShamanSingleton.address],
             },
           });
@@ -92,11 +89,7 @@ describe("OnboarderShamanSummoner", function () {
       this.users = signers;
       this.unnamedUsers = [s1, s2, s3];
       this.amounts = amounts;
-      this.shaman = (await ethers.getContractAt(
-        "SimpleEthOnboarderShaman",
-        shamanAddress,
-        deployer,
-      )) as SimpleEthOnboarderShaman;
+      this.shaman = (await ethers.getContractAt("EthYeeter", shamanAddress, deployer)) as EthYeeter;
     });
 
     shouldSummonASuperBaal();

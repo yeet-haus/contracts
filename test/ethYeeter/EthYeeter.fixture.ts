@@ -7,7 +7,7 @@ import {
   defaultMetadataConfig,
 } from "@daohaus/baal-contracts";
 import { BigNumberish, ContractTransaction } from "ethers";
-import { ethers } from "hardhat";
+import { ethers, getUnnamedAccounts } from "hardhat";
 import { Log } from "hardhat-deploy/types";
 
 import { HOSBase } from "../../types";
@@ -29,14 +29,20 @@ export type ShamanConfig = {
   setupParams: string[];
 };
 
-export const encodeMockOnboarderShamanParams = function () {
-  const expiry = (Date.parse("01 Jan 3000") / 1000).toFixed(0);
-  const multiply = ethers.utils.parseEther("100");
-  const minTribute = ethers.utils.parseEther("0.01");
+export const encodeMockEthYeeterParams = async () => {
+  const startTime = (Date.parse("01 Jan 2000") / 1000).toFixed(0);
+  const endTime = (Date.parse("01 Jan 3000") / 1000).toFixed(0);
   const isShares = true;
+  const multiplier = ethers.utils.parseEther("100");
+  const minTribute = ethers.utils.parseEther("0.01");
+
+  const [s1, s2] = await getUnnamedAccounts();
+  const feeRecipients = [s1, s2];
+  const feeAmounts = [250000, 100000];
+
   const shamanParams = abiCoder.encode(
-    ["uint256", "uint256", "uint256", "bool"],
-    [expiry, multiply, minTribute, isShares],
+    ["uint256", "uint256", "bool", "uint256", "uint256", "address[]", "uint256[]"],
+    [startTime, endTime, isShares, multiplier, minTribute, feeRecipients, feeAmounts],
   );
   return shamanParams;
 };
