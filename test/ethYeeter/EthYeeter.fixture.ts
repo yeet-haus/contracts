@@ -29,20 +29,33 @@ export type ShamanConfig = {
   setupParams: string[];
 };
 
-export const encodeMockEthYeeterParams = async () => {
-  const startTime = (Date.parse("01 Jan 2000") / 1000).toFixed(0);
-  const endTime = (Date.parse("01 Jan 3000") / 1000).toFixed(0);
-  const isShares = true;
-  const multiplier = ethers.utils.parseEther("100");
-  const minTribute = ethers.utils.parseEther("0.01");
-
+export const ethYeeterConfig = async () => {
   const [s1, s2] = await getUnnamedAccounts();
-  const feeRecipients = [s1, s2];
-  const feeAmounts = [250000, 100000];
+  return {
+    startTime: (Date.parse("01 Jan 2000") / 1000).toFixed(0),
+    endTime: (Date.parse("01 Jan 3000") / 1000).toFixed(0),
+    isShares: true,
+    multiplier: ethers.utils.parseEther("100"),
+    minTribute: ethers.utils.parseEther("0.01"),
+    feeRecipients: [s1, s2],
+    feeAmounts: [250000, 100000],
+  };
+};
+
+export const encodeMockEthYeeterParams = async () => {
+  const config = await ethYeeterConfig();
+  const startTime = config.startTime;
+  const endTime = config.endTime;
+  const isShares = config.isShares;
+  const multiplier = config.multiplier;
+  const minTribute = config.minTribute;
+
+  const feeRecipients = config.feeRecipients;
+  const feeAmounts = config.feeAmounts;
 
   const shamanParams = abiCoder.encode(
     ["uint256", "uint256", "bool", "uint256", "uint256", "address[]", "uint256[]"],
-    [startTime, endTime, isShares, multiplier, minTribute, feeRecipients, feeAmounts],
+    [startTime, endTime, isShares, minTribute, multiplier, feeRecipients, feeAmounts],
   );
   return shamanParams;
 };

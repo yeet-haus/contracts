@@ -2,12 +2,7 @@ import { IBaal, IBaalToken, SHAMAN_PERMISSIONS } from "@daohaus/baal-contracts";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-// TO TEST:
-// replace below that are more related to the baal
-// start & end
-// shares vs loot
-// multiplier
-// fee cuts
+import { ethYeeterConfig } from "./EthYeeter.fixture";
 
 export function shouldSummonASuperBaal(): void {
   it("Should have a manager shaman", async function () {
@@ -15,38 +10,35 @@ export function shouldSummonASuperBaal(): void {
     expect(await (this.baal as IBaal).shamans(this.shaman.address)).to.equal(SHAMAN_PERMISSIONS.MANAGER);
   });
 
-  it("Should have shares and loot", async function () {
-    const sharesSymbol = await (this.shares as IBaalToken).symbol();
-    const lootSymbol = await (this.loot as IBaalToken).symbol();
+  it("Should init", async function () {
+    const config = await ethYeeterConfig();
 
-    const baalShares = await (this.baal as IBaal).sharesToken();
-    const baalLoot = await (this.baal as IBaal).lootToken();
-
-    expect(sharesSymbol).to.equal("SHARES");
-    expect(lootSymbol).to.equal("LOOT");
-    expect(baalShares).to.equal(this.shares.address);
-    expect(baalLoot).to.equal(this.loot.address);
+    expect(await this.shaman?.isShares()).to.equal(config.isShares);
+    expect(await this.shaman?.endTime()).to.equal(config.endTime);
+    expect(await this.shaman?.startTime()).to.equal(config.startTime);
+    expect(await this.shaman?.minTribute()).to.equal(config.minTribute);
+    expect(await this.shaman?.multiplier()).to.equal(config.multiplier);
   });
 
-  it("Should have loot,shares ownership with baal", async function () {
-    const sharesOwner = await (this.shares as IBaalToken).owner();
-    const lootOwner = await (this.loot as IBaalToken).owner();
-    expect(sharesOwner).to.equal(this.baal.address);
-    expect(lootOwner).to.equal(this.baal.address);
+  it.only("Should mint shares to a yeeter", async function () {
+    // const amount = ethers.utils.parseEther("1.0");
+    // console.log("this.shaman", this.shaman);
+    // await this.shaman?.contribute(1);
+    // const user = this.users[0];
+    // console.log("user", user);
+    // await impersonateAccount(user);
+    // const signer = await ethers.getSigner(user);
+    // const [s1] = await ethers.getSigners();
+    // console.log("s1", s1);
+    // await s1.sendTransaction({
+    //   to: this.shaman?.address,
+    //   method: 'contributeEth',
+    //   value: amount, // Sends exactly 1.0 ether
+    // });
+    // await this.shaman.contributeEth({ value: amount });
   });
 
-  it("Should mint shares", async function () {
-    const s1Balance = await (this.shares as IBaalToken).balanceOf(this.unnamedUsers[0]);
-    expect(s1Balance).to.equal(this.amounts[0]);
-  });
+  it("Should send fees on yeeting", async function () {});
 
-  it("Should mint loot", async function () {
-    const l1Balance = await (this.loot as IBaalToken).balanceOf(this.unnamedUsers[0]);
-    expect(l1Balance).to.equal(this.amounts[0]);
-  });
-
-  it("should be initialized", async function () {
-    const init = this.summoner?.initialize(ethers.constants.AddressZero, ethers.constants.AddressZero);
-    await expect(init).to.be.revertedWith("Initializable: contract is already initialized");
-  });
+  it("Should require a minimum tribute", async function () {});
 }

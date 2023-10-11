@@ -17,7 +17,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
     uint256 public startTime;
     uint256 public endTime;
     bool public isShares;
-    uint256 public multipler;
+    uint256 public multiplier;
     uint256 public minTribute;
     address[] public feeRecipients;
     uint256[] public feeAmounts;
@@ -50,7 +50,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
             uint256 _endTime,
             bool _isShares,
             uint256 _minTribute,
-            uint256 _multipler,
+            uint256 _multiplier,
             address[] memory _feeRecipients,
             uint256[] memory _feeAmounts
         ) = abi.decode(_initParams, (uint256, uint256, bool, uint256, uint256, address[], uint256[]));
@@ -61,7 +61,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         endTime = _endTime;
         isShares = _isShares;
         minTribute = _minTribute;
-        multipler = _multipler;
+        multiplier = _multiplier;
         feeRecipients = _feeRecipients;
         feeAmounts = _feeAmounts;
     }
@@ -115,7 +115,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
             totalFee = totalFee + _cut;
         }
 
-        uint256 _shares = msg.value * multipler;
+        uint256 _shares = msg.value * multiplier;
 
         // transfer funds to vault
         (bool transferSuccess, ) = vault.call{ value: msg.value - totalFee }("");
