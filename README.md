@@ -7,32 +7,37 @@ It uses a HOS (Higher Order Summoner) that wraps our indexed summoners from the 
 Initial tests are configured and examples of using the base summoner or the baal and vault summoner.
 
 ## HOS (Higher Order Summoner):
-BaseHOS: Abstract that handles summonBaalFromReferrer which takes encoded bytes to setup tokens (loot/shares) and multiple shamans.
+
+BaseHOS: Abstract that handles summonBaalFromReferrer which takes encoded bytes to setup tokens (loot/shares) and
+multiple shamans.
 
 **FixedLootHOS**: summoner is an example of deploying a baal, side vault, a custom token (Fixed loot)
 
-**OnboarderHOS**: Summoner is an example of using the base sumoner (no side vault) and deploying a standard loot/shares token with a
-example of a simple onboarding shaman (eth to shares or loot)
+**OnboarderHOS**: Summoner is an example of using the base sumoner (no side vault) and deploying a standard loot/shares
+token with a example of a simple onboarding shaman (eth to shares or loot)
 
 ## initial examples
 
 ### Shamans:
 
 Shaman init params encoding:
+
 ```js
 const initializationShamanParams = abiCoder.encode(
-    ["address[]", "uint256[]", "bytes[]"],
-    [shamanConfig.singletonAddress, shamanConfig.permissions, shamanConfig.setupParams],
-  );
+  ["address[]", "uint256[]", "bytes[]"],
+  [shamanConfig.singletonAddress, shamanConfig.permissions, shamanConfig.setupParams],
+);
 ```
 
 **ClaimShaman**: a claim shaman that allows NFT holders to claim shares/loot to a ERC6551 TBA (Token Bound Account)
+
 ```sol
 (address _nftAddress, address _registry, address _tbaImp, uint256 _lootPerNft, uint256 _sharesPerNft) = abi
             .decode(_initParams, (address, address, address, uint256, uint256));
 ```
 
-**OnboarderShaman**: yeet Eth for shares or loot 
+**OnboarderShaman**: yeet Eth for shares or loot
+
 ```sol
 (uint256 _expiry, uint256 _multiply, uint256 _minTribute, bool _isShares) = abi.decode(
             _initParams,
@@ -40,7 +45,9 @@ const initializationShamanParams = abiCoder.encode(
         );
 ```
 
-**Community Veto**: Loot holders "stake" against a proposal while in voting, if it hits some threshold it can be cancelled. Kinda a less nuclear rq option. Uses the governor loot token.
+**Community Veto**: Loot holders "stake" against a proposal while in voting, if it hits some threshold it can be
+cancelled. Kinda a less nuclear rq option. Uses the governor loot token.
+
 ```sol
 uint256 _thresholdPercent = abi.decode(_initParams, (uint256));
 ```
@@ -48,15 +55,17 @@ uint256 _thresholdPercent = abi.decode(_initParams, (uint256));
 ### tokens
 
 token init parameters encoding:
+
 ```js
 const sharesParams = abiCoder.encode(["string", "string"], [sharesConfig.name, sharesConfig.symbol]);
-  const initializationShareTokenParams = abiCoder.encode(
-    ["address", "bytes"],
-    [sharesConfig.singletonAddress, sharesParams],
-  );
+const initializationShareTokenParams = abiCoder.encode(
+  ["address", "bytes"],
+  [sharesConfig.singletonAddress, sharesParams],
+);
 ```
 
 **FixedLoot**: A loot token with a fixed supply that is minted upfront between 2+ addresses
+
 ```sol
 (
             string memory name_,
@@ -71,6 +80,7 @@ const sharesParams = abiCoder.encode(["string", "string"], [sharesConfig.name, s
 ---
 
 #### below is the hardhat starter docs
+
 # Hardhat Template [![Open in Gitpod][gitpod-badge]][gitpod] [![Github Actions][gha-badge]][gha] [![Hardhat][hardhat-badge]][hardhat] [![License: MIT][license-badge]][license]
 
 [gitpod]: https://gitpod.io/#https://github.com/paulrberg/hardhat-template

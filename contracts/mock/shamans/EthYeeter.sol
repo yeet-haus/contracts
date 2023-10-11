@@ -25,14 +25,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
     IBaal public baal;
     address vault;
 
-    event OnReceived(
-        address indexed contributorAddress,
-        address shamanAddress,
-        uint256 amount,
-        uint256 isShares,
-        address baal,
-        address vault
-    );
+    event OnReceived(address indexed contributorAddress, uint256 amount, uint256 isShares, address baal, address vault);
 
     /**
      * @dev Initializes contract
@@ -58,8 +51,8 @@ contract EthYeeter is ReentrancyGuard, Initializable {
             bool _isShares,
             uint256 _minTribute,
             uint256 _multipler,
-            address[] _feeRecipients,
-            uint256 _feeAmounts
+            address[] memory _feeRecipients,
+            uint256[] memory _feeAmounts
         ) = abi.decode(_initParams, (uint256, uint256, bool, uint256, uint256, address[], uint256[]));
         require(_feeAmounts.length == _feeRecipients.length, "fee amounts does not equal fee recipients");
         baal = IBaal(_moloch);
@@ -125,12 +118,12 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         uint256 _shares = msg.value * multipler;
 
         // transfer funds to vault
-        (bool success, ) = vault.call{ value: msg.value - totalFee }("");
-        require(success, "Transfer failed");
+        (bool transferSuccess, ) = vault.call{ value: msg.value - totalFee }("");
+        require(transferSuccess, "Transfer failed");
 
         _mintTokens(msg.sender, _shares);
 
-        emit OnReceived(msg.sender, this, msg.value, _shares, address(baal), vault);
+        emit OnReceived(msg.sender, msg.value, _shares, address(baal), vault);
     }
 
     receive() external payable {
