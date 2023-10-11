@@ -2,6 +2,13 @@ import { IBaal, IBaalToken, SHAMAN_PERMISSIONS } from "@daohaus/baal-contracts";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
+// TO TEST:
+// replace below that are more related to the baal
+// start & end
+// shares vs loot
+// multiplier
+// fee cuts
+
 export function shouldSummonASuperBaal(): void {
   it("Should have a manager shaman", async function () {
     expect(this.shaman?.address.length).greaterThan(0);
