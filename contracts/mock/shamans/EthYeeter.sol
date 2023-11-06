@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
 import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
-
-import "hardhat/console.sol";
 
 // yeet eth for loot or shares
 contract EthYeeter is ReentrancyGuard, Initializable {
@@ -19,9 +17,11 @@ contract EthYeeter is ReentrancyGuard, Initializable {
     bool public isShares;
     uint256 public multiplier;
     uint256 public minTribute;
+    uint256 public maxTarget;
     address[] public feeRecipients;
     uint256[] public feeAmounts;
 
+    uint256 public balance;
     IBaal public baal;
     address public vault;
 
@@ -51,9 +51,10 @@ contract EthYeeter is ReentrancyGuard, Initializable {
             bool _isShares,
             uint256 _minTribute,
             uint256 _multiplier,
+            uint256 _maxTarget,
             address[] memory _feeRecipients,
             uint256[] memory _feeAmounts
-        ) = abi.decode(_initParams, (uint256, uint256, bool, uint256, uint256, address[], uint256[]));
+        ) = abi.decode(_initParams, (uint256, uint256, bool, uint256, uint256, uint256, address[], uint256[]));
         require(_feeAmounts.length == _feeRecipients.length, "fee amounts does not equal fee recipients");
         baal = IBaal(_moloch);
         if (_vault == address(0)) {
@@ -66,6 +67,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         isShares = _isShares;
         minTribute = _minTribute;
         multiplier = _multiplier;
+        maxTarget = _maxTarget;
         feeRecipients = _feeRecipients;
         feeAmounts = _feeAmounts;
     }
@@ -110,6 +112,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         require(endTime > block.timestamp, "contribution has ended");
         require(baal.isManager(address(this)), "Shaman not manager");
         require(msg.value >= minTribute, "!minTribute");
+        require(balance < maxTarget, "max target reached");
 
         uint256 totalFee = 0;
         for (uint256 i = 0; i < feeAmounts.length; i++) {
@@ -127,6 +130,8 @@ contract EthYeeter is ReentrancyGuard, Initializable {
 
         require(transferSuccess, "Transfer failed");
 
+        balance = balance + msg.value;
+
         _mintTokens(msg.sender, _shares);
 
         emit OnReceived(msg.sender, msg.value, _shares, address(baal), vault);
@@ -134,5 +139,9 @@ contract EthYeeter is ReentrancyGuard, Initializable {
 
     receive() external payable {
         contributeEth();
+    }
+
+    function goalReached() public view returns (bool) {
+        return balance >= maxTarget;
     }
 }
