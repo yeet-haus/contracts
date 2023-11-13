@@ -28,7 +28,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
     event OnReceived(
         address indexed contributorAddress,
         uint256 amount,
-        uint256 isShares,
+        uint256 shares,
         address baal,
         address vault,
         string message
