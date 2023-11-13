@@ -25,7 +25,14 @@ contract EthYeeter is ReentrancyGuard, Initializable {
     IBaal public baal;
     address public vault;
 
-    event OnReceived(address indexed contributorAddress, uint256 amount, uint256 isShares, address baal, address vault);
+    event OnReceived(
+        address indexed contributorAddress,
+        uint256 amount,
+        uint256 isShares,
+        address baal,
+        address vault,
+        string message
+    );
 
     /**
      * @dev Initializes contract
@@ -106,7 +113,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
      * - `nextTokenID must be more than `minTribute`
      * - `deactivationTimestamp` must be greater than the current block time
      */
-    function contributeEth() public payable nonReentrant {
+    function contributeEth(string memory message) public payable nonReentrant {
         require(address(baal) != address(0), "!init");
         require(startTime <= block.timestamp, "contribution has not started");
         require(endTime > block.timestamp, "contribution has ended");
@@ -134,11 +141,11 @@ contract EthYeeter is ReentrancyGuard, Initializable {
 
         _mintTokens(msg.sender, _shares);
 
-        emit OnReceived(msg.sender, msg.value, _shares, address(baal), vault);
+        emit OnReceived(msg.sender, msg.value, _shares, address(baal), vault, message);
     }
 
     receive() external payable {
-        contributeEth();
+        contributeEth("");
     }
 
     function goalReached() public view returns (bool) {
