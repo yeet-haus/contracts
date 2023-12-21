@@ -10,14 +10,14 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 // yeet eth for loot or shares
 contract EthYeeter is ReentrancyGuard, Initializable {
     uint256 public immutable PERC_POINTS = 1e6;
-    string public constant name = "EthYeeter";
+    string public constant name = "EthYeeter:0.0.2";
 
     uint256 public startTime;
     uint256 public endTime;
     bool public isShares;
     uint256 public multiplier;
     uint256 public minTribute;
-    uint256 public maxTarget;
+    uint256 public goal;
     address[] public feeRecipients;
     uint256[] public feeAmounts;
 
@@ -58,7 +58,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
             bool _isShares,
             uint256 _minTribute,
             uint256 _multiplier,
-            uint256 _maxTarget,
+            uint256 _goal,
             address[] memory _feeRecipients,
             uint256[] memory _feeAmounts
         ) = abi.decode(_initParams, (uint256, uint256, bool, uint256, uint256, uint256, address[], uint256[]));
@@ -74,7 +74,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         isShares = _isShares;
         minTribute = _minTribute;
         multiplier = _multiplier;
-        maxTarget = _maxTarget;
+        goal = _goal;
         feeRecipients = _feeRecipients;
         feeAmounts = _feeAmounts;
     }
@@ -119,7 +119,6 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         require(endTime > block.timestamp, "contribution has ended");
         require(baal.isManager(address(this)), "Shaman not manager");
         require(msg.value >= minTribute, "!minTribute");
-        require(balance < maxTarget, "max target reached");
 
         uint256 totalFee = 0;
         for (uint256 i = 0; i < feeAmounts.length; i++) {
@@ -148,7 +147,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
         contributeEth("");
     }
 
-    function goalReached() public view returns (bool) {
-        return balance >= maxTarget;
+    function goalAchieved() public view returns (bool) {
+        return balance >= goal;
     }
 }

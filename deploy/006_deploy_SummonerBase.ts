@@ -1,6 +1,6 @@
+import { getSetupAddresses } from "@daohaus/baal-contracts";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { getSetupAddresses } from "@daohaus/baal-contracts";
 
 import { deploymentConfig } from "../constants";
 
