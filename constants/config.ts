@@ -58,6 +58,22 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "0x8124Cbb807A7b64123F3dEc3EF64995d8B10d3Eb",
     owner: "",
   },
+  "11155111": {
+    // sepolia
+    baalSummoner: "0xB2B3909661552942AE1115E9Fc99dF0BC93d71d0",
+    bvSummoner: "0x763f5c2E59f997A6cC48Bf1228aBf61325244702",
+    btSummoner: "0xD69e5B8F6FA0E5d94B93848700655A78DF24e387",
+    shares: "0x52acf023d38A31f7e7bC92cCe5E68d36cC9752d6",
+    owner: "",
+  },
+  "8453": {
+    // base
+    baalSummoner: "0x22e0382194AC1e9929E023bBC2fD2BA6b778E098",
+    bvSummoner: "0x2eF2fC8a18A914818169eFa183db480d31a90c5D",
+    btSummoner: "0x97Aaa5be8B38795245f1c38A883B44cccdfB3E11",
+    shares: "0xc650B598b095613cCddF0f49570FfA475175A5D5",
+    owner: "",
+  },
   "80001": {
     // mumbai
     baalSummoner: "",

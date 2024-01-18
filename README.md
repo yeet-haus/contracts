@@ -1,4 +1,15 @@
-# baal-tokens
+## Yeeter Contracts
+
+Yeeter contracts are based on DAOhaus Baal Shaman and Higher Order Summoner contracts.
+
+These can be viewed [at the DAOhaus Org](https://github.com/HausDAO/baal-tokens).
+
+Contracts:
+
+- YeeterShamanDaoSummoner
+- EthYeeter
+
+#### below is the baal-tokens readme
 
 Intent: Playground to experiment with different summoner, token and shaman configurations
 

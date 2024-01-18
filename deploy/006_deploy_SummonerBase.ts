@@ -8,7 +8,7 @@ const deployFn: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { getChainId, deployments, network } = hre;
   const { deployer } = await hre.getNamedAccounts();
 
-  console.log("\nDeploying OnboarderShamanSummoner factory on network:", network.name);
+  console.log("\nDeploying YeeterShamanDaoSummoner factory on network:", network.name);
 
   const chainId = await getChainId();
   const setupAddresses = await getSetupAddresses(chainId, network, deployments);
@@ -23,8 +23,8 @@ const deployFn: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const summonerAddress =
     network.name === "hardhat" ? (await deployments.get("BaalSummoner")).address : addresses.baalSummoner;
 
-  const hosSummonerDeployed = await deployments.deploy("OnboarderShamanSummoner", {
-    contract: "OnboarderShamanSummoner",
+  const hosSummonerDeployed = await deployments.deploy("YeeterShamanDaoSummoner", {
+    contract: "YeeterShamanDaoSummoner",
     from: deployer,
     args: [],
     proxy: {
@@ -36,19 +36,19 @@ const deployFn: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     },
     log: true,
   });
-  console.log("OnboarderShamanSummoner deployment Tx ->", hosSummonerDeployed.transactionHash);
+  console.log("YeeterShamanDaoSummoner deployment Tx ->", hosSummonerDeployed.transactionHash);
 
   const owner = addresses?.owner || deployer;
-  console.log("OnboarderShamanSummoner transferOwnership to", owner);
+  console.log("YeeterShamanDaoSummoner transferOwnership to", owner);
   const txOwnership = await hre.deployments.execute(
-    "OnboarderShamanSummoner",
+    "YeeterShamanDaoSummoner",
     {
       from: deployer,
     },
     "transferOwnership",
     owner,
   );
-  console.log("OnboarderShamanSummoner transferOwnership Tx ->", txOwnership.transactionHash);
+  console.log("YeeterShamanDaoSummoner transferOwnership Tx ->", txOwnership.transactionHash);
 
   if (network.name !== "hardhat" && owner !== deployer && !addresses?.bvSummoner) {
     console.log("BaalAndVaultSummoner transferOwnership to", owner);
@@ -66,4 +66,4 @@ const deployFn: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
 export default deployFn;
 deployFn.id = "001_deploy_Summoner"; // id required to prevent reexecution
-deployFn.tags = ["Factories", "OnboarderShamanSummoner"];
+deployFn.tags = ["Factories", "YeeterShamanDaoSummoner"];

@@ -19,7 +19,7 @@ import "../interfaces/IBaalFixedToken.sol";
 
 import "hardhat/console.sol";
 
-contract OnboarderShamanSummoner is HOSBase {
+contract YeeterShamanDaoSummoner is HOSBase {
     function initialize(address _baalSummoner, address _moduleProxyFactory) public override {
         // standard baalSummoner
         super.initialize(_baalSummoner, _moduleProxyFactory);
@@ -55,7 +55,7 @@ contract OnboarderShamanSummoner is HOSBase {
             ),
             postInitActions,
             saltNonce, // salt nonce
-            bytes32(bytes("DHOnboarderShamanSummoner")) // referrer
+            bytes32(bytes("YeeterShamanDaoSummoner")) // referrer
         );
     }
 
@@ -74,8 +74,6 @@ contract OnboarderShamanSummoner is HOSBase {
         bytes memory initializationShamanParams,
         uint256 index
     ) internal {
-        console.log("hos: shaman", shaman);
-        console.log("hos: index", index);
         (, , bytes[] memory initShamanDeployParams) = abi.decode(
             initializationShamanParams,
             (address, uint256, bytes[])
