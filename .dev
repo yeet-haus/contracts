@@ -1,0 +1,30 @@
+pnpm hardhat compile
+
+# if doing both summoner and shaman
+pnpm hardhat deploy --tags YeeterShamanDaoSummoner,MocksEthYeeter --network sepolia
+
+# shaman only
+pnpm hardhat deploy --tags MocksEthYeeter --network sepolia
+
+pnpm hardhat etherscan-verify --network sepolia
+
+
+
+## 18012024
+
+summoner:
+0x8D60971eFf778966356c1cADD76d525E7B25cc6b
+
+yeeter singleton:
+0x62fF4Ca410E9e58f5ce8B2Ad03695EF0ad990381
+
+BaalSummoner 0xB2B3909661552942AE1115E9Fc99dF0BC93d71d0
+deploying "YeeterShamanDaoSummoner_Implementation" (tx: 0x6c931292ffa925c31e8f288398593c41077f71d195e8cd07a4d83e16f5a7ba1e)...: deployed at 0x732051EeBe3157c5cF78A9E9c31c0E6eA1B208b7 with 2335006 gas
+deploying "YeeterShamanDaoSummoner_Proxy" (tx: 0x58bf3c017777b38c3a39f961230a207a146fc75b2f8c633f3205358dd47730a6)...: deployed at 0x8D60971eFf778966356c1cADD76d525E7B25cc6b with 380155 gas
+YeeterShamanDaoSummoner deployment Tx -> 0x58bf3c017777b38c3a39f961230a207a146fc75b2f8c633f3205358dd47730a6
+YeeterShamanDaoSummoner transferOwnership to 0x7F95B2eBBEaE06985A9d8a1632436d178429eC98
+YeeterShamanDaoSummoner transferOwnership Tx -> 0xf6a2040519402e62343327c551021cbed3088096f15094e04a032ee31a69e22b
+
+Deploying EthYeeter mock on network: sepolia
+deploying "EthYeeter" (tx: 0xc4fb5f4f4b8aa7390a70dd8e9a890552cbc091a2e08f0248c6929fbba90016cd)...: deployed at 0x62fF4Ca410E9e58f5ce8B2Ad03695EF0ad990381 with 1118403 gas
+EthYeeter deployment Tx -> 0xc4fb5f4f4b8aa7390a70dd8e9a890552cbc091a2e08f0248c6929fbba90016cd
