@@ -70,7 +70,8 @@ const explorerApiKey = (networkName: keyof typeof chainIds) => {
 const getNodeURI = (networkName: keyof typeof chainIds) => {
   switch (networkName) {
     case "arbitrum-mainnet":
-      return "https://rpc.ankr.com/arbitrum";
+      // return "https://rpc.ankr.com/arbitrum";
+      return "https://1rpc.io/arb";
     case "arbitrum-goerli":
       return "https://goerli-rollup.arbitrum.io/rpc";
     // return "https://arbitrum-goerli.publicnode.com";
@@ -85,14 +86,15 @@ const getNodeURI = (networkName: keyof typeof chainIds) => {
     case "gnosis":
       return "https://rpc.gnosischain.com";
     case "base":
-      return "https://base.llamarpc.com";
+      // return "https://base.llamarpc.com";
+      return "https://base-pokt.nodies.app";
     default:
       return "https://" + networkName + ".infura.io/v3/" + infuraApiKey;
   }
 };
 
 function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
-  let jsonRpcUrl = getNodeURI(chain);
+  const jsonRpcUrl = getNodeURI(chain);
   return {
     accounts: process.env.ACCOUNT_PK
       ? [process.env.ACCOUNT_PK]
@@ -141,6 +143,7 @@ const config: HardhatUserConfig = {
     goerli: getChainConfig("goerli"),
     sepolia: getChainConfig("sepolia"),
     base: getChainConfig("base"),
+    gnosis: getChainConfig("gnosis"),
     optimism: getChainConfig("optimism-mainnet"),
     "polygon-mainnet": getChainConfig("polygon-mainnet"),
     "polygon-mumbai": getChainConfig("polygon-mumbai"),

@@ -9,6 +9,33 @@ Contracts:
 - YeeterShamanDaoSummoner
 - EthYeeter
 
+#### Deployments
+
+**SEPOLIA**
+
+- HOS: 0x8D60971eFf778966356c1cADD76d525E7B25cc6b
+- EthYeeter singleton: 0x62fF4Ca410E9e58f5ce8B2Ad03695EF0ad990381
+
+**Gnosis Chain**
+
+- HOS: 0x313f9A3C9A5041e9be00cf88b18962581A4eFb35
+- EthYeeter singleton: 0xbe056B4187387D1Cb503370FeA2815e42981DfdF
+
+**Arbitrum**
+
+- HOS: 0x2875aEbb4472E5E579a2A5290c7B5A3C90484D5F
+- EthYeeter singleton: 0x8D60971eFf778966356c1cADD76d525E7B25cc6b
+
+**Optimism**
+
+- HOS: 0x2875aEbb4472E5E579a2A5290c7B5A3C90484D5F
+- EthYeeter singleton: 0x8D60971eFf778966356c1cADD76d525E7B25cc6b
+
+**Base**
+
+- HOS: 0x2875aEbb4472E5E579a2A5290c7B5A3C90484D5F
+- EthYeeter singleton: 0x8D60971eFf778966356c1cADD76d525E7B25cc6b
+
 #### below is the baal-tokens readme
 
 Intent: Playground to experiment with different summoner, token and shaman configurations
