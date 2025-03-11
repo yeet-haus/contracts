@@ -41,6 +41,7 @@ contract ERC20Yeeter is ReentrancyGuard, Initializable {
      * @param _baal Address of DAO contract
      * @param _vault DAO vault address
      * @param _initParams Endocded params for all other shaman params
+     *  address token: erc20 token contract the shaman accepts for contribution
      *  uint256 startTime: timestamp when contributions can start being accepted
      *  uint256 endTime: timestamp when contributions will no longer be accepted
      *  bool isShares: indicates if contribution returns shares or loot

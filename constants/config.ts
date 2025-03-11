@@ -4,6 +4,7 @@ type Contracts = {
   btSummoner: string;
   shares: string;
   ethYeeterSingleton: string;
+  erc20YeeterSingleton: string;
 };
 
 type Ownable = {
@@ -19,6 +20,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "0x8124Cbb807A7b64123F3dEc3EF64995d8B10d3Eb",
     owner: "",
     ethYeeterSingleton: "",
+    erc20YeeterSingleton: "",
   },
   "100": {
     // gnosis
@@ -28,6 +30,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "0x8124Cbb807A7b64123F3dEc3EF64995d8B10d3Eb",
     owner: "",
     ethYeeterSingleton: "0xbe056B4187387D1Cb503370FeA2815e42981DfdF",
+    erc20YeeterSingleton: "0x3872ac2a6022CC806f8a205896C84741B47d50Bf",
   },
   "137": {
     // polygon
@@ -37,6 +40,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "0x8124Cbb807A7b64123F3dEc3EF64995d8B10d3Eb",
     owner: "",
     ethYeeterSingleton: "",
+    erc20YeeterSingleton: "",
   },
   "42161": {
     // arbitrum
@@ -46,6 +50,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "0x8124Cbb807A7b64123F3dEc3EF64995d8B10d3Eb",
     owner: "",
     ethYeeterSingleton: "0x8D60971eFf778966356c1cADD76d525E7B25cc6b",
+    erc20YeeterSingleton: "0x8Aa2F99d42a402208d3C8E3e65F9E7aED1bD419E",
   },
   "10": {
     // optimism
@@ -55,6 +60,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "0x8124Cbb807A7b64123F3dEc3EF64995d8B10d3Eb",
     owner: "",
     ethYeeterSingleton: "0x8D60971eFf778966356c1cADD76d525E7B25cc6b",
+    erc20YeeterSingleton: "0x8Aa2F99d42a402208d3C8E3e65F9E7aED1bD419E",
   },
   "5": {
     // goerli
@@ -64,6 +70,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "0x8124Cbb807A7b64123F3dEc3EF64995d8B10d3Eb",
     owner: "",
     ethYeeterSingleton: "",
+    erc20YeeterSingleton: "",
   },
   "11155111": {
     // sepolia
@@ -73,6 +80,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "0x52acf023d38A31f7e7bC92cCe5E68d36cC9752d6",
     owner: "",
     ethYeeterSingleton: "0x6e714491bB6109900316e70CA5a4324c948C7997",
+    erc20YeeterSingleton: "0x313f9A3C9A5041e9be00cf88b18962581A4eFb35",
   },
   "8453": {
     // base
@@ -80,8 +88,8 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     bvSummoner: "0x2eF2fC8a18A914818169eFa183db480d31a90c5D",
     btSummoner: "0x97Aaa5be8B38795245f1c38A883B44cccdfB3E11",
     shares: "0xc650B598b095613cCddF0f49570FfA475175A5D5",
-    ethYeeterSingleton: "",
-
+    ethYeeterSingleton: "0x8D60971eFf778966356c1cADD76d525E7B25cc6b",
+    erc20YeeterSingleton: "0x8Aa2F99d42a402208d3C8E3e65F9E7aED1bD419E",
     owner: "",
   },
   "80001": {
@@ -92,6 +100,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "",
     owner: "",
     ethYeeterSingleton: "",
+    erc20YeeterSingleton: "",
   },
   "420": {
     // optimismGoerli
@@ -101,6 +110,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "",
     owner: "",
     ethYeeterSingleton: "",
+    erc20YeeterSingleton: "",
   },
   "421613": {
     // arbitrumGoerli
@@ -110,5 +120,6 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     shares: "",
     owner: "",
     ethYeeterSingleton: "",
+    erc20YeeterSingleton: "",
   },
 };

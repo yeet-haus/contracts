@@ -86,8 +86,8 @@ const getNodeURI = (networkName: keyof typeof chainIds) => {
     case "gnosis":
       return "https://rpc.gnosischain.com";
     case "base":
-      // return "https://base.llamarpc.com";
-      return "https://base-pokt.nodies.app";
+      return "https://base.llamarpc.com";
+    // return "https://base-pokt.nodies.app";
     default:
       return "https://" + networkName + ".infura.io/v3/" + infuraApiKey;
   }
