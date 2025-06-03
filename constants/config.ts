@@ -79,7 +79,7 @@ export const deploymentConfig: { [key: string]: Contracts & Ownable } = {
     btSummoner: "0xD69e5B8F6FA0E5d94B93848700655A78DF24e387",
     shares: "0x52acf023d38A31f7e7bC92cCe5E68d36cC9752d6",
     owner: "",
-    ethYeeterSingleton: "0x6e714491bB6109900316e70CA5a4324c948C7997",
+    ethYeeterSingleton: "0x62fF4Ca410E9e58f5ce8B2Ad03695EF0ad990381",
     erc20YeeterSingleton: "0x313f9A3C9A5041e9be00cf88b18962581A4eFb35",
   },
   "8453": {
