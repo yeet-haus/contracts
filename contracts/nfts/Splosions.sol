@@ -17,13 +17,12 @@ contract SplosionsYeeter is ReentrancyGuard, ERC721, Ownable {
     Counters.Counter private _tokenIdCounter;
 
     uint256 public mintPrice = 420000000000000; /* Mint price of each token */
-    uint256 public lootPrize = 2000000000000000000; /* 2 share tokens */
+    uint256 public lootPrize = 1000000000000000000; /* 2 loot token */
     bool public cidv1 = true; /* type of ifps hash for validation logic */
     string private _contractURI =
         "ipfs://bafkreihvio72f7gu7live3us336uuhmufcvbe3iqygsop2f5vt6knculcy"; /* URI for the contract metadata */
 
-    IBaal public baal = IBaal(0xD423689d4A2969e8bdF68d7452122D043D6Dd273); /* Address of dao sepolia */
-    // IBaal public baal = IBaal(0x020ED3b58B1FE2E4cf88786C140cD6e1e6EDB99f); /* Address of dao base */
+    IBaal public baal = IBaal(0x020ED3b58B1FE2E4cf88786C140cD6e1e6EDB99f); /* Address of dao base */
 
     mapping(uint256 => TokenMeta) public tokenMetas; /*maps `tokenId` to struct details*/
 
@@ -76,7 +75,7 @@ contract SplosionsYeeter is ReentrancyGuard, ERC721, Ownable {
             abi.encodePacked(
                 '{"name": "Splosion #',
                 Strings.toString(_tokenId),
-                '", "description": "BOOM!", "image": "',
+                '", "description": "BOOOOOM!", "image": "',
                 imgPath,
                 '", "external_url": "https://splosions.raidguild.org", "attributes":',
                 '[{"trait_type": "Name", "value":"',

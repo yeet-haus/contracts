@@ -129,7 +129,7 @@ contract EthYeeter is ReentrancyGuard, Initializable {
 
         uint256 _shares = msg.value * multiplier;
 
-        (bool transferSuccess, ) = baal.target().call{ value: msg.value - totalFee }("");
+        (bool transferSuccess, ) = vault.call{ value: msg.value - totalFee }("");
 
         require(transferSuccess, "Transfer failed");
 
