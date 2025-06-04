@@ -70,13 +70,13 @@ const explorerApiKey = (networkName: keyof typeof chainIds) => {
 const getNodeURI = (networkName: keyof typeof chainIds) => {
   switch (networkName) {
     case "arbitrum-mainnet":
-      // return "https://rpc.ankr.com/arbitrum";
-      return "https://1rpc.io/arb";
+      // return "https://1rpc.io/arb";
+      return "https://arbitrum.meowrpc.com";
     case "arbitrum-goerli":
       return "https://goerli-rollup.arbitrum.io/rpc";
     // return "https://arbitrum-goerli.publicnode.com";
     case "optimism-mainnet":
-      return "https://rpc.ankr.com/optimism";
+      return "https://optimism.drpc.org";
     case "optimism-goerli":
       return "https://goerli.optimism.io";
     case "polygon-mainnet":
@@ -86,8 +86,9 @@ const getNodeURI = (networkName: keyof typeof chainIds) => {
     case "gnosis":
       return "https://rpc.gnosischain.com";
     case "base":
-      return "https://base.llamarpc.com";
-    // return "https://base-pokt.nodies.app";
+      // return "https://base.llamarpc.com";
+      // return "https://base-pokt.nodies.app";
+      return "https://base-rpc.publicnode.com";
     default:
       return "https://" + networkName + ".infura.io/v3/" + infuraApiKey;
   }

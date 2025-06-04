@@ -133,7 +133,7 @@ contract ERC20Yeeter is ReentrancyGuard, Initializable {
 
         uint256 _shares = _value * multiplier;
 
-        require(token.transferFrom(msg.sender, address(baal), _value - totalFee), "Fee Transfer failed");
+        require(token.transferFrom(msg.sender, vault, _value - totalFee), "Fee Transfer failed");
 
         balance = balance + _value;
 

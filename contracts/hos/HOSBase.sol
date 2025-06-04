@@ -13,12 +13,9 @@ import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
 import "@daohaus/baal-contracts/contracts/interfaces/IBaalSummoner.sol";
 import "@daohaus/baal-contracts/contracts/interfaces/IBaalToken.sol";
 
-// TODO: use on upcoming release
-// import "@daohaus/baal-contracts/contracts/interfaces/IBaalAndVaultSummoner.sol";
-
 import "../interfaces/IShaman.sol";
 import "../interfaces/IBaalFixedToken.sol";
-import "../interfaces/IBaalAndVaultSummoner.sol";
+// import "../interfaces/IBaalAndVaultSummoner.sol";
 
 import "hardhat/console.sol";
 
@@ -70,17 +67,16 @@ contract HOSBase is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         bytes[] memory postInitializationActions,
         uint256 saltNonce
     ) external virtual returns (address) {
-        //
-        address lootToken = deployLootToken(initializationLootTokenParams);
+        address predictedBaalAddress = calculateBaalAddress(saltNonce);
 
-        address sharesToken = deploySharesToken(initializationShareTokenParams);
+        address lootToken = deployLootToken(initializationLootTokenParams, predictedBaalAddress);
+
+        address sharesToken = deploySharesToken(initializationShareTokenParams, predictedBaalAddress);
 
         (bytes[] memory amendedPostInitActions, address[] memory shamans) = deployShamans(
             postInitializationActions,
             initializationShamanParams
         );
-
-        // address predictedBaalAddress = calculateBaalAddress(saltNonce);
 
         // summon baal with new tokens
         (address baal, address vault) = summon(amendedPostInitActions, lootToken, sharesToken, saltNonce);
@@ -88,8 +84,9 @@ contract HOSBase is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         // console.log("baal >>", baal, predictedBaalAddress);
         // post deploy hooks
         postDeployShamanActions(initializationShamanParams, lootToken, sharesToken, shamans, baal, vault);
-        postDeployLootActions(initializationLootTokenParams, lootToken, sharesToken, shamans, baal, vault);
-        postDeploySharesActions(initializationShareTokenParams, lootToken, sharesToken, shamans, baal, vault);
+        // removing for unpause update
+        // postDeployLootActions(initializationLootTokenParams, lootToken, sharesToken, shamans, baal, vault);
+        // postDeploySharesActions(initializationShareTokenParams, lootToken, sharesToken, shamans, baal, vault);
 
         return baal;
     }
@@ -126,44 +123,28 @@ contract HOSBase is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         address vault
     ) internal virtual {}
 
-    function postDeployLootActions(
-        bytes calldata initializationLootParams,
-        address lootToken,
-        address sharesToken,
-        address[] memory shamans,
-        address baal,
-        address vault
-    ) internal virtual {
-        // change token ownership to baal
-        IBaalToken(lootToken).transferOwnership(address(baal));
-    }
-
-    function postDeploySharesActions(
-        bytes calldata initializationSharesParams,
-        address lootToken,
-        address sharesToken,
-        address[] memory shamans,
-        address baal,
-        address vault
-    ) internal virtual {
-        // change token ownership to baal
-        IBaalToken(sharesToken).transferOwnership(address(baal));
-    }
-
     /**
      * @dev deployLootToken
      * @param initializationParams The parameters for deploying the token
      */
-    function deployLootToken(bytes calldata initializationParams) internal virtual returns (address token) {
-        return deployToken(initializationParams);
+    function deployLootToken(
+        bytes calldata initializationParams,
+        address initialOwner
+    ) internal virtual returns (address token) {
+        token = deployToken(initializationParams);
+        IBaalToken(token).transferOwnership(initialOwner);
     }
 
     /**
      * @dev deploySharesToken
      * @param initializationParams The parameters for deploying the token
      */
-    function deploySharesToken(bytes calldata initializationParams) internal virtual returns (address token) {
-        return deployToken(initializationParams);
+    function deploySharesToken(
+        bytes calldata initializationParams,
+        address initialOwner
+    ) internal virtual returns (address token) {
+        token = deployToken(initializationParams);
+        IBaalToken(token).transferOwnership(initialOwner);
     }
 
     /**
